@@ -5,7 +5,7 @@ from rest_framework import generics
 from .serializers import UserSerializer 
 from rest_framework.permissions import  AllowAny 
 
-import pickle 
+
 # with open('backend\api\model\similarity_matrix.pkl', 'rb') as f:
 #     similarity = pickle.load(f)
 # with open('backend\api\model\knn_model_small.pkl','rb') as f:

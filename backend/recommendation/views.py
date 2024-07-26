@@ -8,8 +8,9 @@ from rest_framework.response import Response
 from .models import Movies
 import os 
 import numpy as np 
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-file_path = os.path.join(os.path.dirname(__file__),'model' , 'similarity_matrix.lzma')
+file_path = os.path.join(os.path.dirname(__file__),'model' , 'similarity_matrix.pkl.lzma')
 with open(file_path , 'rb') as f:
     similarity = load(f ,  compression="lzma")
 
@@ -44,9 +45,10 @@ class Rec_ReviewDelete(generics.DestroyAPIView):
     
 
 class Rec_movies_list_view(APIView):
-    
-    serializer_class = Rec_ListSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = Rec_ListSerializer 
+    
     def get(self , request ):
         movie = request.GET.get('movie')
         print(movie)
