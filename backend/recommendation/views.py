@@ -1,5 +1,5 @@
 from django.shortcuts import render
-import pickle
+from compress_pickle import  load
 from .serializers import  Rec_ReviewSerializer ,  Rec_ListSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics 
@@ -9,9 +9,9 @@ from .models import Movies
 import os 
 import numpy as np 
 
-file_path = os.path.join(os.path.dirname(__file__),'model' , 'similarity_matrix.pkl')
+file_path = os.path.join(os.path.dirname(__file__),'model' , 'similarity_matrix.lzma')
 with open(file_path , 'rb') as f:
-    similarity = pickle.load(f)
+    similarity = load(f ,  compression="lzma")
 
 
 # Create your views here.
