@@ -3,7 +3,7 @@
 
 from django.contrib.auth.models import User
 from rest_framework import serializers 
-from .models import Review
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta :
@@ -15,9 +15,3 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user 
     
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta :
-        model = Review 
-        fields = ['id' , 'title' , 'content' , 'created_at' , 'author']
-        extra_kwargs = {"author" : {"read_only":True}}#we will read who the author is but we will not write who the author is 
-        

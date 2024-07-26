@@ -5,6 +5,8 @@ import Register from './pages/Register';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoutes';
 import Layout from './components/Layout'
+import Recommendation from './pages/Recommendation';
+import Booking from './pages/Booking';
 
 
 function Logout(){
@@ -27,6 +29,8 @@ const router = createBrowserRouter(
     <Route path="login" element={<Login/>}/>
     <Route path="logout" element={<Logout/>}/>
     <Route path="register" element={<RegisterandLogout/>}/>
+    <Route path="recommendation" element={<Recommendation/>}/>
+    <Route path="booking" element={<Booking/>}/>
     
     <Route path="*" element={<NotFound/>}/>
     </Route>
