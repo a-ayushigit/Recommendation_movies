@@ -1,0 +1,9 @@
+**Difference between API View and Generic View**
+
+In Django, there are two methods for creating and implementing views for a web application: APIView and generic views. Python functions that take a web request and return a web response are known as views.
+
+The degree of abstraction between APIView and generic views is the primary distinction. A low-level, class-based view called APIView offers a more detailed and flexible method of designing views. This gives developers total control over the handling of requests and the generation of responses.
+
+Generic views, on the other hand, are higher-level views that offer more generic and reusable building blocks for typical web application functionality. As a result, typical functionality like lists, detail views, and forms may be quickly implemented by developers without having to create a tonne of boilerplate code.
+
+In general, the unique requirements and project objectives will determine whether to use APIView or generic views in a Django project. Generic views may be more suitable for easier or more standardised projects, whereas APIView may be more appropriate for complicated or specialised applications.

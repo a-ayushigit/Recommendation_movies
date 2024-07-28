@@ -1,12 +1,11 @@
 import { Route ,  createBrowserRouter , createRoutesFromElements, RouterProvider , Navigate} from 'react-router-dom'
-import Login from './pages/Login';
-import Home from './pages/Home';
-import Register from './pages/Register';
-import NotFound from './pages/NotFound';
-import ProtectedRoute from './components/ProtectedRoutes';
-import Layout from './components/Layout'
-import Recommendation from './pages/Recommendation';
-import Booking from './pages/Booking';
+import Login from '../src/pages/Login'
+
+import Register from '../src/pages/Register'
+import NotFound from '../src/pages/NotFound'
+import Layout from '../src/components/Layout'
+import ProtectedRoutes from '../src/components/ProtectedRoutes'
+import Home from '../src/pages/Home'
 
 
 function Logout(){
@@ -21,32 +20,28 @@ function RegisterandLogout(){
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    
     <Route>
     <Route element={<Layout/>}>
 
-    <Route index path="/" element ={<ProtectedRoute><Home/></ProtectedRoute>}/>
+    <Route index path="/" element ={<ProtectedRoutes><Home/></ProtectedRoutes>}/>
     <Route path="login" element={<Login/>}/>
     <Route path="logout" element={<Logout/>}/>
     <Route path="register" element={<RegisterandLogout/>}/>
-    <Route path="recommendation" element={<Recommendation/>}/>
-    <Route path="booking" element={<Booking/>}/>
-    
     <Route path="*" element={<NotFound/>}/>
     </Route>
   </Route>
- 
   )
 )
 
 
-
 function App() {
-  
+ 
+
   return (
-    <>
-    <RouterProvider router={router}/>
-    </>
+  <>
+  <RouterProvider router={router}/>
+ 
+  </>
   )
 }
 

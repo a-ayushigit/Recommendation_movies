@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import api from '../api'
 import { useNavigate } from 'react-router-dom'
-import { ACCESS_TOKEN , REFRESH_TOKEN} from '../constants'
+
 
 
 const Form = ({route , method }) => {
@@ -17,8 +17,8 @@ const Form = ({route , method }) => {
         try {
           const res = await api.post(route , {username , password});
           if(method === 'login'){
-            localStorage.setItem(ACCESS_TOKEN , res.data.access);
-            localStorage.setItem(REFRESH_TOKEN , res.data.refresh);
+            localStorage.setItem(import.meta.env.ACCESS_TOKEN , res.data.access);
+            localStorage.setItem(import.meta.env.REFRESH_TOKEN , res.data.refresh);
             navigate('/');
           }
           else{
