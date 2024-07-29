@@ -8,12 +8,11 @@ class Movies(models.Model):
     title = models.CharField(max_length=255)
     movie_id = models.IntegerField(default=None)
     overview = models.TextField(default=None)
-    genres = models.ManyToManyField(Genre, blank=True)
+    genres = models.TextField(blank=True)
     cast = models.CharField(max_length=600, blank=True, null=True)
     crew = models.CharField(max_length=200, blank=True, null=True)
     production_companies = models.CharField(max_length=500 , blank=True , null = True)
-    imageUrl = models.TextField(blank=True, null=True)
-    runtime = models.DecimalField(max_digits=3 , decimal_places = 2 , null = True)
+    runtime = models.IntegerField( null = True , blank = True)
    
     
 
@@ -26,10 +25,9 @@ class Movies(models.Model):
 
     
 class Theatre (models.Model):
-    id = models.AutoField(primary_key=True, db_index=True , auto_created=True)
+    id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(max_length=255)
     address = models.TextField()
-    capacity = models.IntegerField()
     place = models.CharField(max_length=900)
     
 
@@ -47,7 +45,7 @@ class Seat_Arrangement(models.Model):
     
 
     def __str__(self):
-        return self.theatre.name +"-"+ self.id
+        return f"{self.id}-rows{self.no_rows}-cols{self.no_cols}"
     
 
 class MovieHall(models.Model):

@@ -7,3 +7,33 @@ The degree of abstraction between APIView and generic views is the primary disti
 Generic views, on the other hand, are higher-level views that offer more generic and reusable building blocks for typical web application functionality. As a result, typical functionality like lists, detail views, and forms may be quickly implemented by developers without having to create a tonne of boilerplate code.
 
 In general, the unique requirements and project objectives will determine whether to use APIView or generic views in a Django project. Generic views may be more suitable for easier or more standardised projects, whereas APIView may be more appropriate for complicated or specialised applications.
+
+
+** *args and  **kwargs in python functions **
+
+*args - variable number of non keyword  arguments are passes in the python function as a tuple 
+
+
+def adder(*num):
+    sum = 0
+    
+    for n in num:
+        sum = sum + n
+
+    print("Sum:",sum)
+
+adder(3,5)
+adder(4,5,6,7)
+adder(1,2,3,5,6)
+
+**kwargs - variable number of keyword arguments are passed in the python function 
+
+def intro(**data):
+    print("\nData type of argument:",type(data))
+
+    for key, value in data.items():
+        print("{} is {}".format(key,value))
+
+intro(Firstname="Sita", Lastname="Sharma", Age=22, Phone=1234567890)
+intro(Firstname="John", Lastname="Wood", Email="johnwood@nomail.com", Country="Wakanda", Age=25, Phone=9876543210)
+
