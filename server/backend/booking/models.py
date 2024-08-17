@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from datetime import datetime , timedelta 
 
 # Create your models here.
 class Genre(models.Model):
@@ -36,6 +38,8 @@ class Theatre (models.Model):
         return self.theatre_name
     
 
+
+
 class Seat_Arrangement(models.Model):
     id = models.AutoField(primary_key=True, db_index=True , auto_created=True)
     no_seats = models.IntegerField()
@@ -49,7 +53,7 @@ class Seat_Arrangement(models.Model):
     
 
 class MovieHall(models.Model):
-    id = models.AutoField(primary_key=True, db_index=True , auto_created=True)
+    id = models.CharField(primary_key=True, db_index=True )
     theatre = models.ForeignKey(Theatre, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -60,7 +64,7 @@ class MovieHall(models.Model):
         return self.theatre.name +"-"+ self.name +"-"+ self.id
     
 class TheatreMovie(models.Model):
-    id = models.AutoField(primary_key=True, db_index=True , auto_created=True)
+    id = models.CharField(primary_key=True, db_index=True , auto_created=True)
     movie_hall = models.ForeignKey(MovieHall, on_delete=models.CASCADE)
     theatre = models.ForeignKey(Theatre, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movies, on_delete=models.CASCADE)
@@ -69,10 +73,10 @@ class TheatreMovie(models.Model):
     
     
     def __str__(self):
-        return self.movie_hall.name +"-"+ self.theatre.name +"-"+ self.movie.title +"-"+ self.start_time +"-"+ self.end_time +"-"+ self.date.strftime("%d-%m-%Y")
+        return self.movie_hall.name +"-"+ self.theatre.name +"-"+ self.movie.title  +"-"+ self.release_date.strftime("%d-%m-%Y")
 
 class Show (models.Model):
-    id = models.AutoField(primary_key=True, db_index=True, auto_created=True)
+    id = models.AutoField(primary_key=True, db_index=True)
     theatre_movie = models.ForeignKey(TheatreMovie, on_delete=models.CASCADE , null=True)
     date = models.DateField()
     start_time = models.TimeField()
@@ -81,7 +85,7 @@ class Show (models.Model):
     place = models.CharField(max_length=900)
     
     def __str__(self):
-        return self.date +"-"+ self.theatre_movie
+        return f"{self.date.strftime('%Y-%m-%d')} +'-'+ {self.theatre_movie}"
 
 
 class SeatType(models.Model):
@@ -93,17 +97,22 @@ class SeatType(models.Model):
         return self.name
     
 class SeatId(models.Model):
-    row = models.CharField(max_length=50 , null=True)
+    
     number = models.CharField(max_length=50 , null= True)
-    type = models.ManyToManyField(SeatType, verbose_name=("seat_type"), blank=True)
+    type = models.ForeignKey(SeatType, blank=True , on_delete=models.CASCADE , default=None)
+    
     def __str__(self):
         return f"Row: {self.row}, Number: {self.number}"
 
 
     
 class Seat (models.Model):
+    id = models.AutoField(primary_key=True, db_index=True, default=None)
     theatre = models.ForeignKey(Theatre, on_delete=models.CASCADE)
-    seat_id = models.ForeignKey(SeatId, on_delete=models.CASCADE , blank=True , null=True) 
+    seat_id = models.JSONField(default = dict)
+    movie_hall = models.ForeignKey(MovieHall, on_delete=models.CASCADE, null = True , blank=True)
+    seat_arrangement = models.ForeignKey(Seat_Arrangement, on_delete=models.CASCADE , null = True , blank=True)
+    status = models.BooleanField(default=False)#whether the seat is booked - true , else false
      
     def __str__(self):
         return self.seat_id+"-"+ self.theatre.name
@@ -122,3 +131,91 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10 , decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
                                     
+
+class RecurrenceModel(models.Model):
+    DAILY='daily'
+    WEEKLY='weekly'
+    MONTHLY='monthly'
+
+    #define the tuples 
+    recurrence_choices = [
+        (DAILY , 'daily'),
+        (WEEKLY , 'weekly'),
+        (MONTHLY, 'monthly')
+    ]
+
+    #define the model 
+    theatre_movie=models.ForeignKey(TheatreMovie , on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    recurrence_type = models.CharField(max_length=7 , choices = recurrence_choices , default = DAILY)
+    interval= models.IntegerField(default=1)#define the no. of days between 
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def generate_occurrences(self):
+        occurrences = []
+        current_date = self.start_date
+        # print("Hello I entered")
+        while current_date <= self.end_date:
+            # print("Hello I entered while loop")
+            try :
+                if self.is_conflict(current_date , self.start_time , self.end_time):
+                    # print("Hello I entered validation error")
+                    raise ValidationError(f"Time conflict detected for this show {self.theatre_movie.movie.title} at {self.theatre_movie.movie_hall.name} on {current_date}")
+                    
+            except ValidationError as e:
+                print(e)
+                if self.recurrence_type == self.DAILY :
+                    current_date += timedelta(days=self.interval)
+                elif self.recurrence_type == self.WEEKLY:
+                    current_date += timedelta(days = self.interval)
+                elif self.recurrence_type == self.MONTHLY:
+                    current_date = self.add_months(current_date , self.interval)
+                # print("Hello I am printing error and i should continue")
+                continue
+            
+            occurrences.append(Show.objects.create(
+                theatre_movie = self.theatre_movie,
+                date=current_date,
+                start_time=self.start_time,
+                end_time=self.end_time,
+                status=True,
+                place=self.theatre_movie.theatre.place
+
+
+            ))
+            # print("Hello I entered and appended the occurrences list")
+            if self.recurrence_type == self.DAILY :
+                current_date += timedelta(days=self.interval)
+            elif self.recurrence_type == self.WEEKLY:
+                current_date += timedelta(days = self.interval)
+            elif self.recurrence_type == self.MONTHLY:
+                current_date = self.add_months(current_date , self.interval)
+            # print("Hello I entered and added the recurrence number of days , months , years ")
+        return occurrences
+    
+    def is_conflict(self , date , start_time , end_time):
+        conflicting_shows = Show.objects.filter(
+            ##double underscore used to traverse foreign key queries 
+            theatre_movie__movie_hall = self.theatre_movie.movie_hall,
+            date=date,
+            start_time__lt = end_time,
+            end_time__gt = start_time
+
+
+        )
+        # print("Hello I entered and i am returning conflict")
+        return conflicting_shows.exists()
+    
+    def add_months(self, date, months):
+        month = date.month  + months
+        year = date.year + month // 12
+        month = month % 12 
+        day = min(date.day, [31,
+            29 if ((year % 4 == 0) and (not year % 100 == 0)) or (year % 400 == 0) else 28,
+            31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month-1])
+        # print("Hello I entered and added month")
+        return date.replace(year=year, month=month, day=day)
+
+            
