@@ -6,14 +6,14 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config)=> {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    console.log(token)
+    const token = localStorage.getItem(import.meta.env.VITE_ACCESS_TOKEN);
+    // console.log(token)
     if(token){
         config.headers.Authorization = `Bearer ${token}`
         config.headers['Content-Type'] = 'application/json'
     }
     //console.log(typeof(baseUrl))
-    console.log(config)
+    // console.log(config)
     //console.log(VITE_API_URL)
     return config;
 }, 

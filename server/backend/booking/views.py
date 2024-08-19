@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from .serializers import  ShowSerializer , SeatSerializer , ReservationSerializer , TheatreSerializer , MoviesSerializer , SeatTypeSerializer 
+from .serializers import  ShowSerializer , SeatSerializer , ReservationSerializer , TheatreSerializer , MoviesSerializer , SeatTypeSerializer , TheatreMovieSerializer
 from rest_framework import viewsets
-from .models import Show , Movies , Reservation , Payment , SeatType , Seat , Theatre
+from .models import Show , Movies , Reservation , Payment , SeatType , Seat , Theatre , TheatreMovie
 from django_filters.rest_framework import DjangoFilterBackend
-from .filters import ShowFilters , TheatreFilters , MovieFilters
+from .filters import ShowFilters , TheatreFilters , TheatreMovieFilters
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 from rest_framework.decorators import action
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from datetime import datetime
+from django.utils.dateparse import parse_date
+from rest_framework.exceptions import ValidationError
 # Create your views here.
 
 class Show_list_view(viewsets.ModelViewSet):
@@ -16,7 +19,29 @@ class Show_list_view(viewsets.ModelViewSet):
     queryset = Show.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = ShowFilters
+    
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     date_str = self.request.query_params.get('date')
+    #     print(date_str)
+    #     if date_str:
+    #         parsed_date = self.parse_custom_date(date_str)
+    #         print(parsed_date)
+    #         if not parsed_date:
+    #             raise ValidationError({'date': 'Invalid date format. Use YYYY-MM-DD or DD-MM-YYYY.'})
+    #         queryset = queryset.filter(date=parsed_date)
+    #         print(queryset[0])
+            
+    #     return queryset
 
+    # def parse_custom_date(self, date_str):
+    #     date = parse_date(date_str)
+    #     if date:
+    #         return date
+    #     try:
+    #         return datetime.strptime(date_str, '%d-%m-%Y').date()
+    #     except ValueError:
+    #         return None
 
 class Theatre_list_view(viewsets.ModelViewSet):
     serializer_class = TheatreSerializer
@@ -24,11 +49,11 @@ class Theatre_list_view(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TheatreFilters
 
-class Movies_list_view(viewsets.ModelViewSet):
-    serializer_class = MoviesSerializer
-    queryset = Movies.objects.all()
+class Theatre_Movies_list_view(viewsets.ModelViewSet):
+    serializer_class = TheatreMovieSerializer
+    queryset = TheatreMovie.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_class = MovieFilters
+    filterset_class = TheatreMovieFilters
 
 class SeatView(viewsets.ModelViewSet):
     serializer_class = SeatSerializer

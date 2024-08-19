@@ -16,9 +16,10 @@ const Form = ({route , method }) => {
         e.preventDefault();
         try {
           const res = await api.post(route , {username , password});
+          console.log(res);
           if(method === 'login'){
-            localStorage.setItem(import.meta.env.ACCESS_TOKEN , res.data.access);
-            localStorage.setItem(import.meta.env.REFRESH_TOKEN , res.data.refresh);
+            localStorage.setItem(import.meta.env.VITE_ACCESS_TOKEN , res.data.access);
+            localStorage.setItem(import.meta.env.VITE_REFRESH_TOKEN , res.data.refresh);
             navigate('/');
           }
           else{

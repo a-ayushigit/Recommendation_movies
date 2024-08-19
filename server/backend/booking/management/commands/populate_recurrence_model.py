@@ -10,7 +10,7 @@ class Command(BaseCommand):
         # count = 0
         with connection.cursor() as cursor:
             # print("hello")
-            # cursor.execute("TRUNCATE TABLE booking_show RESTART IDENTITY CASCADE;")
+            cursor.execute("TRUNCATE TABLE booking_show RESTART IDENTITY CASCADE;")
             cursor.execute("SELECT setval(pg_get_serial_sequence('booking_show' , 'id'),1,false);")
         
         # count += 1
@@ -26,13 +26,13 @@ class Command(BaseCommand):
             # count += 1
             # print(f"hello {count}")
             # print("entered theatre movie for loop")
-            for i in range(5):
-                start_hour = random.randint(0,23)
-                start_minute = random.randint(0,59)
-                start_time = datetime.time(datetime(year=2000 , month=1 , day=1 , hour=start_hour , minute = start_minute))
-                runtime_hours = theatre_movie.movie.runtime // 60
-                runtime_minutes = theatre_movie.movie.runtime % 60
-                end_time = (datetime.combine(datetime.today(), start_time) + timedelta(hours=runtime_hours , minutes= runtime_minutes)).time()
+            
+            start_hour = random.randint(0,23)
+            start_minute = random.randint(0,59)
+            start_time = datetime.time(datetime(year=2000 , month=1 , day=1 , hour=start_hour , minute = start_minute))
+            runtime_hours = theatre_movie.movie.runtime // 60
+            runtime_minutes = theatre_movie.movie.runtime % 60
+            end_time = (datetime.combine(datetime.today(), start_time) + timedelta(hours=runtime_hours , minutes= runtime_minutes)).time()
                 # count += 1
                 # print(f"hello {count}")
                 # print("entered 5 range for loop")
@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
                 # )
                 # if not existing_shows.exists():
-                recurrence = RecurrenceModel.objects.create(
+            recurrence = RecurrenceModel.objects.create(
                         theatre_movie=theatre_movie,
                         start_date=start_date,
                         end_date=end_date,
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 # count += 1
                 # print(f"hello {count}")
                 # print("created recurrence")
-                occurrences = recurrence.generate_occurrences()
+            occurrences = recurrence.generate_occurrences()
                 # for occurrence in occurrences:
                 #     print(occurrence)
                 # print(occurrences)

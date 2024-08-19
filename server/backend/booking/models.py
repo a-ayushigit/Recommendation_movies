@@ -35,7 +35,7 @@ class Theatre (models.Model):
 
 
     def __str__(self):
-        return self.theatre_name
+        return self.name
     
 
 
@@ -169,7 +169,7 @@ class RecurrenceModel(models.Model):
                 if self.recurrence_type == self.DAILY :
                     current_date += timedelta(days=self.interval)
                 elif self.recurrence_type == self.WEEKLY:
-                    current_date += timedelta(days = self.interval)
+                    current_date += timedelta(weeks = self.interval)
                 elif self.recurrence_type == self.MONTHLY:
                     current_date = self.add_months(current_date , self.interval)
                 # print("Hello I am printing error and i should continue")
