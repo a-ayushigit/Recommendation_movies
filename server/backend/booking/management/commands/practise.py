@@ -3,16 +3,10 @@ from datetime import timedelta , datetime
 from faker import Faker 
 from django.core.management.base import BaseCommand
 from booking.models import Show , Theatre , Payment , Reservation , SeatType , Seat , Movies,Seat_Arrangement, MovieHall, TheatreMovie , SeatId
-from django.db import connection
-
 
 class Command(BaseCommand):
     help = 'Populate the database with mock data'
     def handle(self , *args , **kwargs):
-        with connection.cursor() as cursor:
-            # print("hello")
-            cursor.execute("TRUNCATE TABLE booking_seat_arrangement RESTART IDENTITY CASCADE;")
-            
         fake = Faker('en_IN')
         for i in range(20):
             seat_arr={}
@@ -42,6 +36,5 @@ class Command(BaseCommand):
             )
             
 
-        self.stdout.write(self.style.SUCCESS('Successfully populated the database with mock seat arrangement  data'))
-        
-        
+
+                

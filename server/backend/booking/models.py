@@ -43,9 +43,8 @@ class Theatre (models.Model):
 class Seat_Arrangement(models.Model):
     id = models.AutoField(primary_key=True, db_index=True , auto_created=True)
     no_seats = models.IntegerField()
-    seat_arrangement = models.JSONField()## like {"premium" : 32 , "VIP" : 38 , "stand" : 40}
-    no_rows = models.IntegerField()
-    no_cols = models.IntegerField()
+    seat_arrangement = models.JSONField()
+    
     
 
     def __str__(self):

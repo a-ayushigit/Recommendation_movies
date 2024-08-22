@@ -43,6 +43,33 @@ class Show_list_view(viewsets.ModelViewSet):
     #     except ValueError:
     #         return None
 
+
+    def list(self , request , *args , **kwargs):
+        print("Hello ")
+        queryset = self.filter_queryset(self.get_queryset())
+        print(request.query_params)
+        selected_date = request.query_params.get('date' , None)
+        print("selected date ",selected_date)
+        if selected_date:
+            shows_for_selected_date = queryset.filter(date = selected_date)  
+            no_shows_for_date = not shows_for_selected_date.exists()
+        else :
+            no_shows_for_date = True 
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page , many=True)
+            return self.get_paginated_response({
+                'shows': serializer.data,
+                'no_shows_for_selected_date' : no_shows_for_date
+            })
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'shows': serializer.data,
+            'no_shows_for_selected_date': no_shows_for_date,
+        })
+    
 class Theatre_list_view(viewsets.ModelViewSet):
     serializer_class = TheatreSerializer
     queryset = Theatre.objects.all()

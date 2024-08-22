@@ -12,7 +12,7 @@ const SelectLocation = () => {
   const choice = useContext(ChoiceContext);
   const handleNavigation = useNavigationHandler(choice.choice.location);
   return (
-    <div  className="h-full bg-cover bg-center  bg-inherit w-full max-w-screen flex flex-col " style={{ backgroundImage: `url(${moviebg2})` }}>
+    <div  className="h-full bg-cover bg-center  bg-inherit w-full overflow-hidden max-w-screen flex flex-col " style={{ backgroundImage: `url(${moviebg2})` }}>
       <div className="h-full relative">
       <div className="absolute inset-0  bg-black bg-opacity-75"></div>
       <p className="px-40 text-white flex relative flex-row justify-center items-center font-semibold capitalize ">Select the location of your choice </p>
@@ -49,7 +49,7 @@ const SelectLocation = () => {
           <div className="flex flex-row justify-center items-center  ">
           <input type="date" value={date} onChange={(e)=>{
             setDate(e.target.value);
-            choice.addDate(date);
+            choice.addDate(e.target.value);
             
             }} className="flex rounded-md p-5 items-center justify-center"/>
 
